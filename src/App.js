@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import styled from "styled-components";
+import Sidebar from './components/Sidebar';
+import Home from './pages/Home';
+import Complited from './pages/Completed';
+import Product from './pages/Product';
+import Stats from './pages/Stats';
+import Users from './pages/Users';
+import Settings from './pages/Settings';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Center>
+        <Sidebar />
+        <Routes>
+          <Route exact path='/' element={<Home />} />
+          <Route path='/stats' element={<Stats />} />
+          <Route path='/product' element={<Product />} />
+          <Route path='/complited' element={<Complited />} />
+          <Route path='/user' element={<Users />} />
+          <Route path='/settings' element={<Settings />} />
+        </Routes>
+      </Center>
+    </BrowserRouter>
   );
 }
 
+const Center = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+`
 export default App;

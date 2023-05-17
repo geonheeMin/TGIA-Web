@@ -1,0 +1,54 @@
+table {
+  border: 1px #0A1931;
+  font-size: .9em;
+  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: rgb(237, 235, 235);
+  height: 55px;
+}
+
+tbody {
+  background-color: rgb(248, 248, 248);
+  height: 460px;
+}
+
+tr {
+  background-color: rgb(248, 248, 248);
+  border-bottom: 1px solid rgb(237, 235, 235);
+  text-align: center;
+  height: 50px;
+}
+
+th {
+  font-size: 16px;
+}
+
+.title {
+  margin-top: 7px;
+}
+
+.contentList {
+  margin-top: 25px;
+  width: 100%;
+}
+
+.listName {
+  background-color: rgb(237, 235, 235);
+}
+
+.paging {
+  margin-top: 10px;
+}
+
+.content_none {
+  width: 300%;
+  background-color: rgb(248, 248, 248);
+  border-bottom: 1px solid rgb(237, 235, 235);
+  padding: 12px;
+}  

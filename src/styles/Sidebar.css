@@ -1,0 +1,51 @@
+.sidebar ul {
+    list-style: none;
+    margin-left: 5%;
+    margin-right: 10%;
+}
+
+.sidebar li {
+    margin-top: 18px;
+    background-color: rgba(255, 255, 255, 0.422);
+    border-radius: 8px;
+}
+
+a,
+.sidebar label {
+    display: block;
+    height: 25px;
+    padding: 9px;
+    cursor: pointer;
+    color: black;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.sidebar a:hover {
+    color: white;
+}
+
+.sidebar ul li:hover,
+.sidebar label:hover {
+    background-color: hsla(237, 90%, 15%, 0.877);
+    color: #000;
+    border-radius: 8px;
+}
+
+.sidebar button {
+    font-size: 20px;
+    border: none;
+    color: #8b0404a2;
+    background-color: #e0e0e0;
+}
+
+.sidebar button:hover {
+    cursor: pointer;
+}
+
+/*  배경색 코드 따기    */
+.test {
+
+    background-color: #8b0404a2;
+
+}
