@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import axios from "axios"
 import styled from "styled-components";
 import Paging from "../components/Paging";
+import useStore from "../store";
 import '../styles/ListStyle.css';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -19,6 +20,7 @@ const Main = styled.div`
 `
 
 function Completed() {  
+  const { url } = useStore();
   const [posts, setPosts] = useState([]); // 완료된 리스트 데이터
   const [count, setCount] = useState(0); // 아이템 총 개수
   const [currentpage, setCurrentPage] = useState(1); // 현재페이지
@@ -40,8 +42,7 @@ function Completed() {
   }
 
   useEffect(() => {
-    axios.get("http://223.194.129.94:8080/purchasedlist")
-    //axios.get("http://13.209.65.73:8080/purchasedlist")
+    axios.get(`${url}/purchasedlistV2`)
     .then(res => {
       setPosts(res.data)
     })
@@ -62,9 +63,10 @@ function Completed() {
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
+        <td></td>
       </tr>
-    );
-    }
+    )};
     return cells;
   };
       
@@ -75,31 +77,33 @@ function Completed() {
       </div>
       <table className="contentList">
         <thead>
-        <tr className='listName'>
-          <th> 번호 </th>  
+        <tr className='listName'> 
+          <th> 글 번호 </th>       
+          <th> 제목 </th>  
           <th> 물품명 </th>  
           <th> 가격 </th>
           <th> 판매자 </th>
           <th> 구매자 </th>
           <th> 지불 수단 </th>
+          <th> 구매 고유 번호 </th>
         </tr>
         </thead>
         <tbody>
           {currentPosts && posts.length > 0 ? (
-            currentPosts.map((post) => (
-              <tr className='listData'>
-                <td>{post.tid}</td>
+            currentPosts.map((post, index) => (
+              <tr className="listData" key={`post-${post.id}`}>
+                <td>{index + 1}</td>
+                <td>{post.post_title}</td>
                 <td>{post.item_name}</td>
                 <td>{post.price}</td>
                 <td>{post.seller_username}</td>
                 <td>{post.buyer_username}</td>
-                <td>{post.payment_method_type}</td>
+                <td>신용카드</td>
+                <td>{post.tid}</td>
               </tr>
             ))
           ) : (
-            <div className="content_none">
-              완료된 거래가 없습니다.
-            </div>
+            <div className="content_none">완료된 거래가 없습니다.</div>
           )}
           {generateEmptyCells(remainingCells)} 
         </tbody>

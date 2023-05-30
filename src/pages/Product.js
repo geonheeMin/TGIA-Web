@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import axios from "axios"
 import styled from "styled-components";
 import Paging from "../components/Paging";
+import useStore from "../store";
 import '../styles/ListStyle.css';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -19,6 +20,7 @@ const Main = styled.div`
 `
 
 function Product() {
+  const { url } = useStore();
   const [posts, setPosts] = useState([]) // 상품 리스트 데이터
   const [count, setCount] = useState(0); // 아이템 총 개수
   const [currentpage, setCurrentPage] = useState(1); // 현재페이지
@@ -40,8 +42,7 @@ function Product() {
   }
 
   useEffect(() => {
-    axios.get("http://223.194.129.94:8080/post/all")
-    //axios.get("http://13.209.65.73:8080/post/all")
+    axios.get(`${url}/post/all`)
     .then(res => {
       setPosts(res.data)
     })
@@ -64,8 +65,7 @@ function Product() {
         <td></td>
         <td></td>
       </tr>
-    );
-    }
+    )};
     return cells;
   };
       

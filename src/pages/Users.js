@@ -2,6 +2,7 @@ import { React, useState, useEffect } from "react";
 import axios from "axios"
 import styled from "styled-components";
 import Paging from "../components/Paging";
+import useStore from "../store";
 import '../styles/ListStyle.css';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -18,7 +19,8 @@ const Main = styled.div`
   }
 `
 
-function Users() {  
+function Users() {
+  const { url } = useStore();
   const [users, setUsers] = useState([]); // 유저 리스트 데이터
   const [count, setCount] = useState(0); // 아이템 총 개수
   const [currentpage, setCurrentPage] = useState(1); // 현재페이지
@@ -40,8 +42,7 @@ function Users() {
   }
 
   useEffect(() => {
-    axios.get("http://223.194.129.94:8080/userlist")
-    //axios.get("http://13.209.65.73:8080/userlist")
+    axios.get(`${url}/userlist`)
     .then(res => {
       setUsers(res.data)
     })
@@ -61,9 +62,9 @@ function Users() {
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
       </tr>
-    );
-    }
+    )};
     return cells;
   };
       
@@ -76,7 +77,8 @@ function Users() {
         <thead>
         <tr className='listName'>
           <th> 멤버 ID </th>  
-          <th> 닉네임 </th>  
+          <th> 닉네임 </th>
+          <th> 단과대</th>  
           <th> 1트랙 </th>
           <th> 2트랙 </th>
           <th> 매너 점수 </th>
@@ -88,6 +90,7 @@ function Users() {
               <tr className='listData'>
                 <td>{user.member_id}</td>
                 <td>{user.username}</td>
+                <td>{user.first_college}</td>
                 <td>{user.firstTrack}</td>
                 <td>{user.secondTrack}</td>
                 <td>{user.mannerscore}</td>

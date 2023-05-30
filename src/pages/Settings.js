@@ -1,8 +1,7 @@
 import { React, useState, useEffect } from "react";
 import axios from "axios"
 import styled from "styled-components";
-
-const apiUrl = process.env.REACT_APP_API_URL;
+import useStore from "../store";
 
 const Main = styled.div`
   display: block;
@@ -13,18 +12,7 @@ const Main = styled.div`
 `
 
 function Settings() {
-  const [data, setData] = useState({});
-
-  useEffect(() => {
-    axios.get("http://43.201.38.196:8080/post/all")
-    .then(res => {
-    setData(res.data);
-    console.log(res.data);
-    })
-    .catch(e => {
-        console.log(e);
-    })
-  }, [])
+  const { url } = useStore();
 
   return(
     <Main>

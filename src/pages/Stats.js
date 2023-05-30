@@ -13,30 +13,30 @@ import {
 } from 'recharts';
 import axios from "axios";
 import styled from "styled-components";
+import useStore from "../store";
 import '../styles/Stats.css';
-
-const apiUrl = process.env.REACT_APP_API_URL;
 
 const RADIAN = Math.PI / 180;
 
+// 카테고리별 게시글 파이 차트 색상
 const COLORS = [
-  "hsla(218, 93%, 16%, 1.00)",
-  "hsla(218, 92%, 20%, 0.95)",
-  "hsla(218, 89%, 24%, 0.90)",
-  "hsla(218, 86%, 28%, 0.90)",
-  "hsla(218, 83%, 32%, 0.89)",
-  "hsla(218, 80%, 36%, 0.88)",
-  "hsla(218, 77%, 40%, 0.88)",
+  "hsla(218, 90%, 18%, 0.99)",
+  "hsla(218, 88%, 19%, 0.95)",
+  "hsla(218, 86%, 22%, 0.90)",
+  "hsla(218, 84%, 25%, 0.90)",
+  "hsla(218, 82%, 28%, 0.89)",
+  "hsla(218, 80%, 31%, 0.88)",
+  "hsla(218, 78%, 34%, 0.88)",
 ];
-
+// 카테고리별 거래 파이 차트 색상
 const COLORS_transaction = [
-  "hsla(207, 93%, 20%, 1.00)",
-  "hsla(207, 92%, 24%, 0.95)",
-  "hsla(207, 89%, 28%, 0.90)",
+  "hsla(207, 92%, 22%, 0.99)",
+  "hsla(207, 90%, 24%, 0.95)",
+  "hsla(207, 88%, 28%, 0.90)",
   "hsla(207, 86%, 32%, 0.90)",
-  "hsla(207, 83%, 36%, 0.89)",
-  "hsla(207, 80%, 40%, 0.88)",
-  "hsla(207, 77%, 44%, 0.88)",
+  "hsla(207, 84%, 36%, 0.89)",
+  "hsla(207, 82%, 40%, 0.88)",
+  "hsla(207, 80%, 44%, 0.88)",
 ];
 
 
@@ -49,33 +49,16 @@ const Main = styled.div`
     }
 `
 
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-  if (percent === 0) {
-    return null;
-  }
-
-  return (
-    <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
-
 function Stats() {
-  const [monthlyPostCounts, setMonthlyPostCounts] = useState({});
+  const { url } = useStore();
   const [categoryData, setCategoryData] = useState([]);
   const [categoryData2, setCategoryData2] = useState([]);
-
-  const [posts, setPosts] = useState([])
   const [totalPost, setTotalPost] = useState(0);
   const [totalTransactions, setTotalTransactions] = useState(0);
   const [dailyTransactions, setDailyTransactions] = useState(0);
   const [weeklyTransactions, setWeeklyTransactions] = useState(0);
   const [totalTransactionsPrice, setTotalTransactionsPrice] = useState(0);
-
+  const [totalUser, setTotalUser] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [chartData_transaction,setChartData_transaction] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("전체"); // 선택된 카테고리 상태
@@ -91,9 +74,24 @@ function Stats() {
     '부기굿즈'
   ];
 
+  // 파이 차트 커스터마이징
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    if (percent === 0) {
+      return null;
+    }
+
+    return (
+      <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   useEffect(() => {
-    axios.get("http://223.194.129.94:8080/transaction")
-    //axios.get("http://13.209.65.73:8080/transaction")
+    axios.get(`${url}/transaction`)
       .then(res => {
         const monthlyPostCountsByCategory = res.data.monthlyPostCountsByCategory;
         const monthlyTransactionCountsByCategory = res.data.monthlyTransactionCountsByCategory;
@@ -152,6 +150,16 @@ function Stats() {
       });
   }, []);
 
+  useEffect(() => {
+    axios.get(`${url}/userlist`)
+    .then(res => {
+      setTotalUser(res.data.length);
+    })
+    .catch(e => {
+      console.log(e);
+    })
+  }, []);
+
   // 카테고리 버튼을 클릭했을 때 호출되는 함수
   const handleCategoryButtonClick = (category) => {
     setSelectedCategory(category);
@@ -161,6 +169,29 @@ function Stats() {
   const filteredData = chartData.filter((item) =>
     selectedCategory === '전체' ? true : item.name === selectedCategory
   );
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const { cx, cy } = payload[0].payload;
+      return (
+        <div
+          style={{
+            position: 'absolute',
+            top: `${cy}px`,
+            left: `${cx}px`,
+            transform: 'translate(-50%, -50%)',
+            background: '#fff',
+            padding: '5px',
+            border: '1px solid #ccc',
+          }}
+        >
+          <p>{label}</p>
+          <p>{payload[0].value}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return(
     <Main>
@@ -186,11 +217,15 @@ function Stats() {
           <p className="analytics_data">₩{totalTransactionsPrice.toLocaleString()}</p>
           <p className="analytics_category">거래된 금액</p>
         </div>
+        <div className="analytics_div_add">
+          <p className="analytics_data">{totalUser}</p>
+          <p className="analytics_category">사용자 수</p>
+        </div>
       </div>
       {/* 카테고리별 거래 및 완료 비율 */}
       <div className="cateogy_analytics_title">
+        <h2>카테고리별 게시글 비율</h2>
         <h2>카테고리별 거래 비율</h2>
-        <h2>카테고리별 완료 비율</h2>
       </div>
       {/* 카테고리별 거래 비율 파이 차트 */}
       <div className="category_analytics_piechart">
@@ -210,7 +245,8 @@ function Stats() {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
+          {/* <Tooltip/> */}
         </PieChart>
         <ul className="category_ranking">
           {chartData.map((item, index) => (
@@ -241,7 +277,7 @@ function Stats() {
         <ul className="category_ranking">
           {chartData_transaction.map((item, index) => (
             <li key={index} style={{ color: COLORS_transaction[index % COLORS_transaction.length] }}>
-              {/* [{index + 1}] */} {item.name} : {item.value}
+              {item.name} : {item.value}
             </li>
           ))}
         </ul>
@@ -278,7 +314,7 @@ function Stats() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="등록건수" stroke="#8884d8" activeDot={{ r: 8 }} />
+                  <Line type="monotone" dataKey="등록건수" stroke="#8884d8" strokeWidth={2} activeDot={{ r: 8 }} />
                 </LineChart>
               </div>
             )
@@ -287,24 +323,24 @@ function Stats() {
         {/* 카테고리 거래완료 라인 차트 */}      
         <div className="categoryLineChart_transaction">
           {categoryData.map((category) => (
-              selectedCategory === category.category && (
-                <div key={category.category}>
-                  <LineChart
-                    width={570}
-                    height={180}
-                    data={categoryData2.find(item => item.category === category.category).data}
-                    className="lineChart_transaction"
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" padding={{ left: 30, right: 30 }} />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="거래완료" stroke="#0084d8" activeDot={{ r: 8 }} />
-                  </LineChart>
-                </div>
-              )
-            ))}
+            selectedCategory === category.category && (
+              <div key={category.category}>
+                <LineChart
+                  width={570}
+                  height={180}
+                  data={categoryData2.find(item => item.category === category.category).data}
+                  className="lineChart_transaction"
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" padding={{ left: 30, right: 30 }} />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="거래완료" stroke="#0084d8" strokeWidth={2} activeDot={{ r: 8 }} />
+                </LineChart>
+              </div>
+            )
+          ))}
         </div>
       </div>
     </Main>

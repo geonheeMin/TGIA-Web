@@ -34,7 +34,7 @@ body {
     border-radius: 10px;
     text-align: left;
     color: white;
-    margin-left: 5%;
+    margin-left: 3%;
 }
 
 /* 통계 데이터 */
@@ -168,7 +168,7 @@ body {
 
 .category_selected {
     margin-top: 0%;
-    margin-left: 5%;
+    margin-left: 9.8%;
 }
 
 .lineChart_registerd {
