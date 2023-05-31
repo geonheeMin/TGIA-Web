@@ -143,7 +143,7 @@ function Stats() {
         setTotalTransactions(res.data.totalTransactions);
         setDailyTransactions(res.data.dailyTransactions);
         setWeeklyTransactions(res.data.weeklyTransactions);
-        setTotalTransactionsPrice(res.data.totalTransactionsPrice_도서);
+        setTotalTransactionsPrice(res.data.totalTransactionsPrice);
       })
       .catch(e => {
         console.log("에러" + e);

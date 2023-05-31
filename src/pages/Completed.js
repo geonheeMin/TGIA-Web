@@ -90,24 +90,24 @@ function Completed() {
         </thead>
         <tbody>
         {currentPosts && posts.length > 0 ? (
-  currentPosts.map((post, index) => {
-    const sequentialNumber = indexOfFirstPost + index + 1;
-    return (
-      <tr className="listData" key={`post-${post.id}`}>
-        <td>{sequentialNumber}</td>
-        <td>{post.post_title}</td>
-        <td>{post.item_name}</td>
-        <td>{post.price}</td>
-        <td>{post.seller_username}</td>
-        <td>{post.buyer_username}</td>
-        <td>신용카드</td>
-        <td>{post.tid}</td>
-      </tr>
-    );
-  })
-) : (
-  <div className="content_none">완료된 거래가 없습니다.</div>
-)}
+          currentPosts.map((post, index) => {
+            const sequentialNumber = indexOfFirstPost + index + 1;
+            return (
+              <tr className="listData" key={`post-${post.id}`}>
+                <td>{sequentialNumber}</td>
+                <td>{post.post_title}</td>
+                <td>{post.item_name}</td>
+                <td>{post.price}</td>
+                <td>{post.seller_username}</td>
+                <td>{post.buyer_username}</td>
+                <td>신용카드</td>
+                <td>{post.tid}</td>
+              </tr>
+            );
+          })
+        ) : (
+          <div className="content_none">완료된 거래가 없습니다.</div>
+        )}
           {generateEmptyCells(remainingCells)} 
         </tbody>
       </table>
